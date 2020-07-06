@@ -7,15 +7,18 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.set("view engine", "ejs");
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended: true}));
 
-app.get("/", (req, res) => {
-  res.send("Hello!");
-});
+app.set("view engine", "ejs");
 
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
+});
+
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -29,9 +32,6 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

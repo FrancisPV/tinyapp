@@ -36,8 +36,17 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  console.log('shortURL', shortURL);
-  let templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL] };
+  const longURL = urlDatabase[shortURL];
+
+  if (longURL === undefined) {
+    res.status(404).send(`shortURL: ${shortURL} does not exist in our database!`);
+    return;
+  }
+
+  let templateVars = {
+    shortURL: shortURL,
+    longURL: longURL
+  };
   res.render("urls_show", templateVars);
 });
 

@@ -25,6 +25,21 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+app.post("/urls/:shortURL/delete", (req, res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
+app.post("/urls/:shortURL", (req, res) => {
+  const longURL = req.body.longURL;
+
+  const shortURL = req.params.shortURL
+
+  urlDatabase[shortURL] = longURL;
+
+  res.redirect(`/urls/${shortURL}`);
+});
+
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
@@ -39,7 +54,7 @@ app.get("/urls/:shortURL", (req, res) => {
   const longURL = urlDatabase[shortURL];
 
   if (longURL === undefined) {
-    res.status(404).send(`shortURL: ${shortURL} does not exist in our database!`);
+    res.status(404).render("404_error");
     return;
   }
 

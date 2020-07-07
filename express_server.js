@@ -7,11 +7,13 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 const generateRandomString = () => {
-  return Math.random().toString(36).substr(2,6);
+  return Math.random().toString(36).substr(2, 6);
 };
 
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 
@@ -30,38 +32,56 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-app.post("/urls/:shortURL", (req, res) => {
+app.post("/urls/:shortURL", (req, res) => {
   const longURL = req.body.longURL;
 
-  const shortURL = req.params.shortURL
+  const shortURL = req.params.shortURL;
 
   urlDatabase[shortURL] = longURL;
 
   res.redirect(`/urls/${shortURL}`);
 });
 
+app.post("/login", (req, res) => {
+  res.cookie("username", req.body.username);
+  res.redirect("/urls");
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("/urls");
+});
+
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
+  
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL];
-
+  let templateVars = {
+    shortURL: shortURL,
+    longURL: longURL,
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
   if (longURL === undefined) {
     res.status(404).render("404_error");
     return;
   }
-
-  let templateVars = {
-    shortURL: shortURL,
-    longURL: longURL
-  };
   res.render("urls_show", templateVars);
 });
 
@@ -70,6 +90,7 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[shortURL];
   res.redirect(longURL);
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);

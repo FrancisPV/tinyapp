@@ -127,7 +127,6 @@ app.post("/register", (req, res) => {
   } else {
     res.status(400).send("Error : email already exists");
   }
-  console.log(users);
 });
 
 
@@ -184,8 +183,6 @@ app.get("/register", (req, res) => {
 app.get("/urls", (req, res) => {
   let userId = req.session.user_id;
   let user = users[userId];
-  console.log('session', req.session);
-  console.log(user);
   const URLsObject = urlsForUser(userId, urlDatabase);
   let templateVars = {
     urls: URLsObject,
@@ -211,7 +208,6 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let userId = req.session["user_id"];
   let user = users[userId];
-  console.log("user :", user);
   const URLsObject = urlsForUser(user, urlDatabase);
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL] && urlDatabase[shortURL].longURL;

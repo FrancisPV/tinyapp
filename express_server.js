@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const methodOverride = require('method-override');
 
-
+app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(cookieSession({
@@ -58,7 +58,7 @@ app.post("/urls", (req, res) => {
 });
 
 //delete post
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL", (req, res) => {
   let userId = req.session.user_id;
   let user = users[userId];
   if (user) {
@@ -70,7 +70,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 //edit post
-app.post("/urls/:shortURL", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {
 
   const longURL = req.body.longURL;
 

@@ -4,6 +4,7 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
+const methodOverride = require('method-override');
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -13,11 +14,6 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }));
 
-//middleware
-/* app.use((req, res, next) => {
-  req.currentUser = users[res.session["user_id"]];
-  next();
-}); */
 
 const urlDatabase = {
   "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: "aJ48lW" },

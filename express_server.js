@@ -1,7 +1,7 @@
 const { urlsForUser, generateRandomString, addNewUser, findUserByEmail, authenticateUser } = require("./helper");
 const express = require("express");
 const app = express();
-const PORT = 8080; // default port 8080
+const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const methodOverride = require('method-override');
@@ -34,17 +34,6 @@ const users = {
     password: "dishwasher-funk"
   }
 };
-
-
-
-
-
-
-// add the new user to our database
-
-
-// find the user by is e-mail
-
 
 //***ALL THE POST****
 app.post("/urls", (req, res) => {
@@ -101,8 +90,6 @@ app.post("/register", (req, res) => {
   }
 });
 
-
-
 //validates the login
 app.post("/login", (req, res) => {
   const email = req.body.email;
@@ -124,13 +111,13 @@ app.post("/logout", (req, res) => {
 });
 
 //***ALL THE GET***
-
+//redirect to urls page is the user exist, render the login page
 app.get("/", (req, res) => {
   const user = users[req.session.user_id];
   if (user) {
     res.redirect("/urls");
   } else {
-    res.render("/login");
+    res.render("login");
   }
 });
 
@@ -182,7 +169,6 @@ app.get("/urls/new", (req, res) => {
 
 });
 
-//
 app.get("/urls/:shortURL", (req, res) => {
   let userId = req.session["user_id"];
   let user = users[userId];

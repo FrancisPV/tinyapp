@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+
 const urlsForUser = (id, urlDatabase) => {
   const urlObject = {};
   for (const key in urlDatabase) {
@@ -21,7 +22,7 @@ const authenticateUser = (email, password, users) => {
   }
 };
 
-
+//generate a random 8 digits string
 const generateRandomString = () => {
   return Math.random().toString(36).substr(2, 6);
 };
@@ -34,6 +35,7 @@ const addNewUser = (email, password, username, users) => {
   return userId;
 };
 
+//find a user by it's email and return this user
 const findUserByEmail = (email, users) => {
   for (let userId in users) {  // need to create the user object
     if (users[userId].email === email) {

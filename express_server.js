@@ -126,7 +126,12 @@ app.post("/logout", (req, res) => {
 //***ALL THE GET***
 
 app.get("/", (req, res) => {
-  res.render("/login");
+  const user = users[req.session.user_id];
+  if (user) {
+    res.redirect("/urls");
+  } else {
+    res.render("/login");
+  }
 });
 
 //log you in the urls page when you have the good credential

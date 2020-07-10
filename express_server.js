@@ -59,9 +59,11 @@ app.post("/urls", (req, res) => {
 
 //delete post
 app.delete("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
   let userId = req.session.user_id;
-  let user = users[userId];
-  if (user) {
+  if (urlDatabase[shortURL] === undefined) {
+    res.redirect("/login");
+  } else if (userId === urlDatabase[shortURL].userID) {
     delete urlDatabase[req.params.shortURL];
     res.redirect("/urls");
   } else {
@@ -122,6 +124,11 @@ app.post("/logout", (req, res) => {
 });
 
 //***ALL THE GET***
+
+app.get("/", (req, res) => {
+  res.render("/login");
+});
+
 //log you in the urls page when you have the good credential
 app.get("/login", (req, res) => {
   const user = users[req.session.user_id];
@@ -183,8 +190,16 @@ app.get("/urls/:shortURL", (req, res) => {
     urls: URLsObject,
     user,
   };
+  if (user === undefined) {
+    res.redirect("/login");
+    return;
+  }
   if (longURL === undefined) {
-    res.status(404).render("404_error");
+    res.status(404).render("404_error", templateVars);
+    return;
+  }
+  if (userId !== urlDatabase[shortURL].userID) {
+    res.redirect("/urls");
     return;
   }
   res.render("urls_show", templateVars);
